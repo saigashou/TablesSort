@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>HTMLのテーブルでソートする方法をサンプルコード付き解説！</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+  <link rel="stylesheet" href="index.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+
+<body>
+
+
+  <div class="container">
+    <h3 class="bg-primary text-white" id="1">サンプル</h3>
+    <div class="sort-table">
+      <table id="table2" class="table table-info table-striped table-bordered">
+        <thead>
+          <tr>
+            <th id="index_0" data-sort="">id</th>
+            <th id="index_1" data-sort="">name</th>
+            <th id="index_2" data-sort="">price</th>
+            <th id="index_3" data-sort="">ranking</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div><input value="1" id="index1">
+              </div>
+              <div>aaaa</div>
+              <div>bbb</div>
+            </td>
+            <td>CD</td>
+            <td>1000</td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td><input value="2" id="index2"></td>
+            <td>towel</td>
+            <td>1200</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td><input value="3" id="index3"></td>
+            <td>flag</td>
+            <td>800</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <td><input value="4" id="index4"></td>
+            <td>T-shirt</td>
+            <td>2000</td>
+            <td>4</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+   
+  </div>
+
+
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+<!-- <script src="index.js"></script> -->
+<script>
+
+  $(function () {
+
+    /**
+     * クリックイベント
+     */
+    $('th').click(function () {
+      // 情報取得（列数）
+      let ele = $(this).attr('id');
+      //後ろから1文字目を取得
+      ele = ele.substr(-1, 1);
+      let sortFlg = $(this).data('sort');
+
+      // リセット
+      $('th').data('sort', "");
+
+      // ソート順序
+      if (sortFlg == "" || sortFlg == "desc") {
+        sortFlg = "asc";
+        $(this).data('sort', "asc");
+      } else {
+        sortFlg = "desc";
+        $(this).data('sort', "desc");
+      }
+
+      // テーブルソート処理
+      sortTable(ele, sortFlg);
+    });
+
+    /**
+     * テーブルソートメソッド
+     * 
+     * @param ele 
+     * @param sortFlg 
+     */
+    function sortTable(ele, sortFlg) {
+      let arr = $('#table2 tbody tr').sort(function (a, b) {
+
+        // let arr = $('table tbody tr').sort(function (a, b) {
+        // ソート対象が数値の場合
+        if ($.isNumeric($(a).find('input').eq(ele)[0].value)) {
+          //列<td>までなので、inputまでの一つ[0]を追加
+          let aNum = Number($(a).find('input').eq(ele)[0].value);
+          let bNum = Number($(b).find('input').eq(ele)[0].value);
+
+          if (sortFlg == "asc") {
+            return aNum - bNum;
+          } else {
+            return bNum - aNum;
+          }
+        } else {
+          // ソート対象が数値でない場合
+          let sortNum = 1;
+
+          // 比較時は小文字に統一
+          if ($(a).find('input').eq(ele).value > $(b).find('input').eq(ele).value) {
+            sortNum = 1;
+          } else {
+            sortNum = -1;
+          }
+          if (sortFlg == "desc") {
+            sortNum *= (-1);
+          }
+
+          return sortNum;
+        }
+      });
+      $('#table2 tbody').html(arr);
+    }
+
+  });
+</script>
